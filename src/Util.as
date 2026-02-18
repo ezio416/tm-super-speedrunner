@@ -1,9 +1,3 @@
-void ClearMaps() {
-    maps = {};
-
-    loaded = false;
-}
-
 void LoadMapsAsync() {
     const uint64 start = Time::Now;
     trace("loading maps");
@@ -14,7 +8,7 @@ void LoadMapsAsync() {
         yield();
     }
 
-    ClearMaps();
+    Reset();
 
     uint num;
 
@@ -34,7 +28,7 @@ void LoadMapsAsync() {
 
     if (maps.Length != 200) {
         NotifyError("failed to load all maps after " + (Time::Now - start) + "ms");
-        ClearMaps();
+        Reset();
 
     } else {
         loaded = true;
@@ -56,4 +50,13 @@ void NotifyError(const string&in msg) {
 void NotifyWarn(const string&in msg) {
     warn(msg);
     Notify(msg, vec4(1.0f, 0.5f, 0.0f, 1.0f));
+}
+
+void Reset() {
+    curMap     = 0;
+    loaded     = false;
+    maps       = {};
+    running    = false;
+    stop       = false;
+    timerStart = 0;
 }

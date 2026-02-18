@@ -15,11 +15,7 @@ void Main() {
 }
 
 void OnDestroyed() {
-    ClearMaps();
-    curMap = 0;
-    running = false;
-    stop = false;
-    timerStart = 0;
+    Reset();
 }
 
 void OnDisabled() {
@@ -27,6 +23,11 @@ void OnDisabled() {
 }
 
 void OnEnabled() {
+    if (PlayChallenge::Demo()) {
+        NotifyError("this plugin requires the full game!");
+        return;
+    }
+
     LoadMapsAsync();
 }
 
@@ -59,7 +60,10 @@ void Render() {
 }
 
 void RenderMenu() {
-    if (UI::MenuItem(pluginTitle, "", S_Window)) {
+    if (true
+        and !PlayChallenge::Demo()
+        and UI::MenuItem(pluginTitle, "", S_Window)
+    ) {
         S_Window = !S_Window;
     }
 }
@@ -68,7 +72,10 @@ void RenderWindow() {
     UI::Text("Current Map: #" + maps[curMap].name + " / 200");
     UI::Text("Time (RTA): " + (timerStart > 0 ? Time::Format(Time::Now - timerStart) : "-:--:--.---"));
 
-    UI::BeginDisabled(running);
+    UI::BeginDisabled(false
+        or running
+        or !loaded
+    );
     if (UI::Button("start")) {
         timerStart = Time::Now;
         startnew(SpeedrunAsync);
