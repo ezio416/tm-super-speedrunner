@@ -3,31 +3,37 @@ const string  pluginIcon  = Icons::ClockO;
 Meta::Plugin@ pluginMeta  = Meta::ExecutingPlugin();
 const string  pluginTitle = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name;
 
-uint curMap = 0;
-Map@[] maps;
-bool running = false;
-bool stop = false;
-uint64 timerStart = 0;
+uint                  curMap     = 0;
+bool                  loaded     = false;
+PlayChallenge::Map@[] maps;
+bool                  running    = false;
+bool                  stop       = false;
+uint64                timerStart = 0;
 
 void Main() {
-    auto App = cast<CTrackMania>(GetApp());
+    OnEnabled();
+}
 
-    while (App.ChallengeInfos.Length < 200)
-        yield();
+void OnDestroyed() {
+    ClearMaps();
+    curMap = 0;
+    running = false;
+    stop = false;
+    timerStart = 0;
+}
 
-    for (uint i = 0; i < App.ChallengeInfos.Length; i++) {
-        CGameCtnChallengeInfo@ map = App.ChallengeInfos[i];
-        if (map !is null && map.MapUid != "" && !map.Name.Contains("VR"))
-            maps.InsertLast(Map(map));
-    }
+void OnDisabled() {
+    OnDestroyed();
+}
 
-    if (maps.Length < 200)
-        throw("too few maps: " + maps.Length);
+void OnEnabled() {
+    LoadMapsAsync();
 }
 
 void Render() {
     if (false
         or !S_Window
+        or !loaded
         or (true
             and S_HideWithGame
             and !UI::IsGameUIVisible()
@@ -92,7 +98,7 @@ void SpeedrunAsync() {
         yield();
 
         if (next) {
-            Map@ nextMap = maps[curMap];
+            PlayChallenge::Map@ nextMap = maps[curMap];
             print("PLAYING NEXT MAP (index " + curMap + "): " + nextMap.name + " | " + nextMap.path);
             nextMap.Play();
             next = false;
@@ -119,30 +125,4 @@ void SpeedrunAsync() {
     curMap = 0;
     running = false;
     stop = false;
-}
-
-class Map {
-    string name;
-    string path;
-
-    Map(CGameCtnChallengeInfo@ map) {
-        name = map.Name;
-        path = map.FileName;
-    }
-
-    void Play() {
-        startnew(CoroutineFunc(PlayAsync));
-    }
-
-    void PlayAsync() {
-        print("loading map " + name + " from path " + path);
-
-        auto App = cast<CTrackMania>(GetApp());
-        App.BackToMainMenu();
-        while (!App.ManiaTitleFlowScriptAPI.IsReady)
-            yield();
-        App.ManiaTitleFlowScriptAPI.PlayMap(path, "TMC_CampaignSolo", "");
-        while (!App.ManiaTitleFlowScriptAPI.IsReady)
-            yield();
-    }
 }
