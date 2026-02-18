@@ -3,6 +3,7 @@ name = "Super Speedrunner"
 author = "Ezio"
 category = "Race"
 version = "0.2.0"
+siteid = 827
 
 [script]
 dependencies = [ "PlayChallenge" ]
