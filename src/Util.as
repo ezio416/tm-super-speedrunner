@@ -59,4 +59,5 @@ void Reset() {
     running    = false;
     stop       = false;
     timerStart = 0;
+    timerTotal = 0;
 }

@@ -8,6 +8,7 @@ bool                  loaded     = false;
 PlayChallenge::Map@[] maps;
 bool                  running    = false;
 bool                  stop       = false;
+uint64                timerTotal = 0;
 uint64                timerStart = 0;
 
 void Main() {
@@ -70,13 +71,15 @@ void RenderMenu() {
 
 void RenderWindow() {
     UI::Text("Current Map: #" + maps[curMap].name + " / 200");
-    UI::Text("Time (RTA): " + (timerStart > 0 ? Time::Format(Time::Now - timerStart) : "-:--:--.---"));
+    const uint64 timer = timerStart > 0 ? Time::Now - timerStart : timerTotal;
+    UI::Text("Time (RTA): " + (timer > 0 ? Time::Format(timer) : "-:--:--.---"));
 
     UI::BeginDisabled(false
         or running
         or !loaded
     );
     if (UI::Button("start")) {
+        timerTotal = 0;
         timerStart = Time::Now;
         startnew(SpeedrunAsync);
     }
@@ -88,6 +91,7 @@ void RenderWindow() {
         or stop
     );
     if (UI::Button("stop")) {
+        timerTotal = Time::Now - timerStart;
         timerStart = 0;
         stop = true;
     }
@@ -124,6 +128,7 @@ void SpeedrunAsync() {
             curMap++;
             if (curMap == 200) {
                 curMap = 0;
+                timerTotal = Time::Now - timerStart;
                 break;
             }
         }
