@@ -1,7 +1,7 @@
 ![Signed](https://img.shields.io/badge/Signed-No-FF3333)
 ![Game Turbo](https://img.shields.io/badge/Game-Turbo-blue)
 
-# Turbo Speedrun
+# Super Speedrunner
 
 A simple speedrun plugin for Trackmania Turbo. Starts at map #001 and automatically loads the next map upon finishing the current one.
 
