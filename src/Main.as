@@ -27,20 +27,35 @@ void Main() {
 
 void Render() {
     if (false
-        || !S_Enabled
-        || (S_HideWithGame && !UI::IsGameUIVisible())
-        || (S_HideWithOP && !UI::IsOverlayShown())
-    )
+        or !S_Window
+        or (true
+            and S_HideWithGame
+            and !UI::IsGameUIVisible()
+        )
+        or (true
+            and S_HideWithOP
+            and !UI::IsOverlayShown()
+        )
+    ) {
         return;
+    }
 
-    if (UI::Begin(pluginTitle, S_Enabled, UI::WindowFlags::AlwaysAutoResize))
+    const int flags = UI::GetDefaultWindowFlags()
+        | UI::WindowFlags::AlwaysAutoResize
+        | UI::WindowFlags::NoFocusOnAppearing
+    ;
+
+    if (UI::Begin(pluginTitle, S_Window, flags)) {
         RenderWindow();
+    }
+
     UI::End();
 }
 
 void RenderMenu() {
-    if (UI::MenuItem(pluginTitle, "", S_Enabled))
-        S_Enabled = !S_Enabled;
+    if (UI::MenuItem(pluginTitle, "", S_Window)) {
+        S_Window = !S_Window;
+    }
 }
 
 void RenderWindow() {
@@ -55,7 +70,10 @@ void RenderWindow() {
     UI::EndDisabled();
 
     UI::SameLine();
-    UI::BeginDisabled(!running || stop);
+    UI::BeginDisabled(false
+        or !running
+        or stop
+    );
     if (UI::Button("stop")) {
         timerStart = 0;
         stop = true;
@@ -83,10 +101,10 @@ void SpeedrunAsync() {
 
         auto Playground = cast<CTrackManiaRaceNew>(App.CurrentPlayground);
         next = true
-            && Playground !is null
-            && Playground.UIConfigs.Length > 0
-            && Playground.UIConfigs[0] !is null
-            && Playground.UIConfigs[0].UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
+            and Playground !is null
+            and Playground.UIConfigs.Length > 0
+            and Playground.UIConfigs[0] !is null
+            and Playground.UIConfigs[0].UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
         ;
 
         if (next) {
