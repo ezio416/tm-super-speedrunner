@@ -9,3 +9,5 @@ A simple speedrun plugin for Trackmania Turbo. Starts at map #001 and automatica
 
 <!-- ![Signed](https://img.shields.io/badge/Signed-Yes-00AA00) -->
 <!-- ![Signed](https://img.shields.io/badge/Signed-School_Mode-CC1199) -->
+
+![image](images/super-speedrunner.png)
