@@ -13,6 +13,11 @@ bool S_Notify = true;
 
 [SettingsTab name="Debug" icon="Bug"]
 void SettingsTab_Debug() {
-    UI::Text("loaded: " + loaded);
-    UI::Text("maps: "   + maps.Length);
+    UI::Text("curMap: "     + curMap);
+    UI::Text("loaded: "     + loaded);
+    UI::Text("maps: "       + maps.Length);
+    UI::Text("running: "    + running);
+    UI::Text("stop: "       + stop);
+    UI::Text("timerTotal: " + timerTotal);
+    UI::Text("timerStart: " + timerStart);
 }
